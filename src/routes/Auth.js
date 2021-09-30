@@ -1,4 +1,7 @@
-import { createUserWithEmailAndPassword } from "@firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "@firebase/auth";
 import React, { useState } from "react";
 import { authService } from "../firebase_config";
 
@@ -19,9 +22,20 @@ const Auth = () => {
   };
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (newAccount) {
-      await createUserWithEmailAndPassword(authService, email, password);
-    } else {
+    try {
+      let data;
+      if (newAccount) {
+        data = await createUserWithEmailAndPassword(
+          authService,
+          email,
+          password
+        );
+      } else {
+        data = await signInWithEmailAndPassword(authService, email, password);
+      }
+      console.log(data);
+    } catch (e) {
+      console.log(e);
     }
   };
 
