@@ -1,6 +1,11 @@
 import {
   createUserWithEmailAndPassword,
+  getRedirectResult,
+  GithubAuthProvider,
+  GoogleAuthProvider,
   signInWithEmailAndPassword,
+  signInWithRedirect,
+  signInWithPopup,
 } from "@firebase/auth";
 import React, { useState } from "react";
 import { authService } from "../firebase_config";
@@ -8,7 +13,8 @@ import { authService } from "../firebase_config";
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [newAccount, setNewAccount] = useState(true);
+  const [signInMode, setSignInMode] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const onPressed = (e) => {
     const {
@@ -24,18 +30,50 @@ const Auth = () => {
     e.preventDefault();
     try {
       let data;
-      if (newAccount) {
+      if (signInMode) {
         data = await createUserWithEmailAndPassword(
           authService,
           email,
           password
-        );
+        ).then((e) => setErrorMessage(e));
       } else {
         data = await signInWithEmailAndPassword(authService, email, password);
       }
       console.log(data);
     } catch (e) {
-      console.log(e);
+      setErrorMessage(e.message.replace("Firebase: Error ", ""));
+    }
+  };
+
+  const toggleMode = () => {
+    setSignInMode(!signInMode);
+  };
+
+  const onSocialClick = async (e) => {
+    const {
+      target: { name },
+    } = e;
+
+    if (name === "google") {
+      const provider = new GoogleAuthProvider();
+      await new signInWithRedirect(authService, provider);
+      const result = await getRedirectResult(authService);
+      if (result) {
+        // const user = result.user;
+        // const credential = provider.credentialFromResult(authService, result);
+        // const token = credential.accessToken;
+      }
+      // const operationType = result.operationType;
+    } else if (name === "github") {
+      const provider = new GithubAuthProvider();
+      await new signInWithRedirect(authService, provider);
+      const result = await getRedirectResult(authService);
+      if (result) {
+        // const user = result.user;
+        // const credential = provider.credentialFromResult(authService, result);
+        // const token = credential.accessToken;
+      }
+      // const operationType = result.operationType;
     }
   };
 
@@ -60,16 +98,23 @@ const Auth = () => {
         />
         <input
           type="Submit"
-          value={newAccount ? "Create" : "Login"}
+          value={signInMode ? "Create" : "Login"}
           required
           onClick={onSubmit}
         />
       </form>
+      {errorMessage}
       <div>
-        <button>Sign In with Google</button>
-
-        <button>Sign In with Github</button>
+        <button onClick={onSocialClick} name="google">
+          Sign In with Google
+        </button>
+        <button onClick={onSocialClick} name="github">
+          Sign In with Github
+        </button>
       </div>
+      <span onClick={toggleMode}>
+        {signInMode ? "already have a account" : "I don't have a account"}
+      </span>
     </div>
   );
 };
