@@ -3,7 +3,7 @@ import AppRouter from "./Router";
 import { authService } from "../firebase_config";
 import { signOut } from "@firebase/auth";
 
-function App() {
+function App({ history }) {
   const auth = authService;
   const [initFirebase, setInitFirebase] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -20,6 +20,7 @@ function App() {
   const logout = () => {
     signOut(authService).then(() => {
       setIsLoggedIn(false);
+      // history.push("/");
     });
   };
 
