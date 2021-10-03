@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import AppRouter from "./Router";
 import { authService } from "../firebase_config";
-import { signOut } from "@firebase/auth";
 
-function App({ history }) {
+function App(props) {
   const auth = authService;
   const [initFirebase, setInitFirebase] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -12,22 +11,17 @@ function App({ history }) {
     authService.onAuthStateChanged((user) => {
       if (user) {
         setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
       }
       setInitFirebase(true);
     });
   });
 
-  const logout = () => {
-    signOut(authService).then(() => {
-      setIsLoggedIn(false);
-      // history.push("/");
-    });
-  };
-
   return (
     <div>
       <AppRouter isLoggedIn={isLoggedIn} />
-      {isLoggedIn && <button onClick={logout}>Logout</button>}
+
       <footer>
         Copyright &copy;{new Date().getFullYear()} made by PitterPark
       </footer>

@@ -1,11 +1,11 @@
 import React from "react";
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import Home from "../routes/Home";
 import Auth from "../routes/Auth";
 import Navigation from "./Navigation";
 const AppRouter = ({ isLoggedIn }) => {
   return (
-    <Router>
+    <BrowserRouter>
       {isLoggedIn && <Navigation />}
       <Switch>
         {isLoggedIn ? (
@@ -20,8 +20,9 @@ const AppRouter = ({ isLoggedIn }) => {
         <Route exact path="/profile">
           Profile
         </Route>
+        <Redirect from="*" to="/" />
       </Switch>
-    </Router>
+    </BrowserRouter>
   );
 };
 

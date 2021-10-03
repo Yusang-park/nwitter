@@ -113,7 +113,7 @@ const Auth = () => {
         </button>
       </div>
       <span onClick={toggleMode}>
-        {signInMode ? "already have a account" : "I don't have a account"}
+        {signInMode ? "already have an account" : "I don't have an account"}
       </span>
     </div>
   );
